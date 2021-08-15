@@ -1,0 +1,49 @@
+name: sketch2frog
+channels:
+  - anaconda
+  - defaults
+dependencies:
+  - autopep8=1.4.4
+  # - catboost=0.22
+  - colorama=0.4.3
+  # - dask=2.11.0
+  # - dask-ml=1.2.0
+  - ipykernel=5.5.3
+  - ipython=7.12.0
+  - jedi=0.15.2
+  - jupyter=1.0.0
+  - matplotlib=3.4.1
+  - nb_conda_kernels=2.3.1
+  - numexpr=2.7.1
+  - numpy=1.20.0
+  - pandas=1.2.4
+  - pip=21.0.1
+  - plotly=4.14.3
+  - pyarrow=0.15.1
+  - python=3.8.8
+  - scikit-learn=0.24.1
+  - scikit-image=0.18.2
+  # - scipy=1.4.1
+  - pip:
+    - albumentations==1.0.3
+    # - dask-xgboost==0.1.10
+    - graphviz==0.13.2
+    - jupyter_contrib_nbextensions==0.5.1
+    # - kaggle==1.5.6
+    # - pandarallel==1.4.6
+    - Pillow==7.1.2
+    - pdpbox==0.2.0
+    - pydot==1.4.2
+    - tensorflow==2.4.1
+    - tensorflow-addons==0.12.1
+    - tensorflow-datasets==4.3.0
+    - tensorflow-hub==0.8.0
+    - tqdm==4.42.0
+    - treeinterpreter==0.2.2
+    - wandb==0.10.27
+    # - xgboost==1.0.2
+
+# prune uninstalls packages that were removed
+# conda env update --name myenv --file local.yml --prune
+# or from within the environment
+# conda env update --file local.yml --prune
