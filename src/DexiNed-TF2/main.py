@@ -1,6 +1,9 @@
 #!/usr/bin/python3.7 python
 """
+Using the checkpoints saved in checkpoint_dir, run the model in test mode.
+Use data from test_dir and save results in output_dir with chosen output image size.
 
+python src/DexiNed-TF2/main.py --model_state="test" --test_dir="data/raw/data-224" --output_dir="data/interim" --checkpoint_dir="src/DexiNed-TF2" --checkpoint="DexiNed23_model.h5" --test_img_height=224 --test_img_width=224 --test_bs=32
 """
 __author__ = "Xavier Soria Poma"
 __email__ = "xsoria@cvc.uab.es / xavysp@gmail.com"
@@ -21,7 +24,7 @@ in_linux=True if platform.system()=="Linux" else False
 
 DATASET_NAME= ['BIPED','MBIPED','BSDS','BSDS300','CID','DCD','MULTICUE',
                 'PASCAL','NYUD','CLASSIC'] # 8
-TEST_DATA = DATASET_NAME[6] # MULTICUE=6
+TEST_DATA = DATASET_NAME[-1] # MULTICUE=6
 TRAIN_DATA = DATASET_NAME[0]
 test_data_inf = dataset_info(TEST_DATA, is_linux=in_linux)
 train_data_inf = dataset_info(TRAIN_DATA, is_linux=in_linux)
@@ -63,7 +66,7 @@ parser.add_argument("--beta1", type=float, default=0.5, help="momentum term of a
 parser.add_argument("--l1_weight", type=float, default=100.0, help="weight on L1 term for generator gradient")
 parser.add_argument("--gan_weight", type=float, default=1.0, help="weight on GAN term for generator gradient")
 parser.add_argument("--rgbn_mean", type=float, default=[103.939,116.779,123.68, 137.86], help="pixels mean")
-parser.add_argument("--checkpoint", type=str, default='DexiNed19_model.h5', help="checkpoint Name")
+parser.add_argument("--checkpoint", type=str, default='DexiNed19_model.h5', help="checkpoint Name") # previously DexiNed19_model.h5
 
 arg = parser.parse_args()
 def main(args):
