@@ -135,14 +135,12 @@ dmypy.json
 # 
 .gitignore
 /data/
-/GAN_practice/*/data/*
-/GAN_practice/*/models/*
-/GAN_practice/*/wandb/*
+*/models/*
+*/wandb
 *dask-worker-space
 /models/
 *catboost_info/
 CycleGAN Paper.pdf
 Perceptual Losses for Real-Time Style Transfer.pdf
 Pix2Pix.pdf
-/GAN_practice/5. Pix2Pix/visualisations/*/*.png
 DexiNed23_model.h5
