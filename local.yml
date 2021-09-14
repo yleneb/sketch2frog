@@ -40,7 +40,7 @@ dependencies:
     - tensorflow-hub==0.8.0
     - tqdm==4.42.0
     - treeinterpreter==0.2.2
-    - wandb==0.10.27
+    - wandb==0.12.1
     # - xgboost==1.0.2
 
 # prune uninstalls packages that were removed
