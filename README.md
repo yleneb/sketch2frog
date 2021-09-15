@@ -24,3 +24,8 @@ https://github.com/zaidalyafeai/zaidalyafeai.github.io/tree/master/pix2pix
 
 GauGAN - SPADE
 https://arxiv.org/pdf/1903.07291.pdf
+
+CycleGAN manga colorization
+https://github.com/OValery16/Manga-colorization---cycle-gan 
+
+pix2pix + SPADE
