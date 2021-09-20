@@ -134,9 +134,9 @@ dmypy.json
 
 # 
 .gitignore
-/data/
+*/data/
 */models/*
-*/wandb
+*/*/wandb
 *dask-worker-space
 /models/
 *catboost_info/
