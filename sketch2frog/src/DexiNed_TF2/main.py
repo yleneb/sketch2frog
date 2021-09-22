@@ -14,8 +14,8 @@ __copyright__   = "Copyright 2020, CIMI"
 import argparse
 import platform
 
-from run_model import run_DexiNed
-from dataset_manager import dataset_info
+from .run_model import run_DexiNed
+from .dataset_manager import dataset_info
 
 
 # Testing settings

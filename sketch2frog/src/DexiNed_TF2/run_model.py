@@ -5,9 +5,9 @@ import numpy as np
 from os.path import join
 import cv2 as cv
 
-from model import *
-from utls import image_normalization,visualize_result, tensor2image, cv_imshow,h5_writer
-from dataset_manager import DataLoader
+from .model import *
+from .utls import image_normalization,visualize_result, tensor2image, cv_imshow,h5_writer
+from .dataset_manager import DataLoader
 
 
 BUFFER_SIZE = 448
