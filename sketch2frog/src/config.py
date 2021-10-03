@@ -1,4 +1,11 @@
+import pathlib
+
 # Add some paths here
+PATH = pathlib.Path.cwd()
+DATA_DIR = PATH.parent / 'data'
+MODELS_DIR = PATH.parent / 'models'
+VIZ_DIR = PATH.parent / 'visualisations'
+
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
