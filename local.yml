@@ -34,6 +34,7 @@ dependencies:
     - Pillow==7.1.2
     - pdpbox==0.2.0
     - pydot==1.4.2
+    - tensorboard_plugin_profile==2.5.0
     - tensorflow==2.4.1
     - tensorflow-addons==0.12.1
     - tensorflow-datasets==4.3.0

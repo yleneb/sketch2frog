@@ -135,7 +135,9 @@ dmypy.json
 # 
 .gitignore
 */data/
+*/visualisations
 */models/*
+sketch2frog/notebooks/tmp/
 */*/wandb
 *dask-worker-space
 /models/
@@ -144,3 +146,4 @@ CycleGAN Paper.pdf
 Perceptual Losses for Real-Time Style Transfer.pdf
 Pix2Pix.pdf
 DexiNed23_model.h5
+tensorboard
