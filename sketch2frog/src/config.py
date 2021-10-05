@@ -1,17 +1,11 @@
 import pathlib
+from src.tools.tools import dotdict
 
 # Add some paths here
 PATH = pathlib.Path.cwd()
 DATA_DIR = PATH.parent / 'data'
 MODELS_DIR = PATH.parent / 'models'
 VIZ_DIR = PATH.parent / 'visualisations'
-
-class dotdict(dict):
-    """dot.notation access to dictionary attributes"""
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
 
 ## From main.py
 def get_dexined_inference_args():
@@ -97,7 +91,7 @@ def get_dexined_inference_args():
         checkpoint='DexiNed19_model.h5', # checkpoint Name
     )
 
-    # overwrite withou our settings
+    # overwrite with our settings
     # if running main.py from the sketch2frog directory
     dexined_args.update(dotdict(
         model_state="test",
