@@ -90,7 +90,17 @@ class BatchPredictionCallback(Callback):
                 if batch == self.batches_to_log[-1]:
                     self.is_first_epoch = False
                     
-class ClearMemory(Callback):
+class ClearMemoryCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
         gc.collect()
         K.clear_session()
+        
+class ModelSavingCallback(Callback):
+    def __init__(self, save_path, frequency=50):
+        super(ModelSavingCallback, self).__init__()
+        self.save_path = save_path
+        self.frequency = frequency
+        
+    def on_epoch_end(self, epoch, logs=None):
+        if epoch != 0 and epoch % self.frequency==0:
+            self.model.save(str(self.save_path / f'{epoch}E'))

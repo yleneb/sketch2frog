@@ -9,8 +9,8 @@ class Pix2Pix(tf.keras.Model):
 
     patch_size is the size of the output of the PatchGAN discriminator
     """
-    def __init__(self, generator, discriminator, patch_size=8, real_label_lower=0.8, real_label_upper=1.2):
-        super(Pix2Pix, self).__init__()
+    def __init__(self, generator, discriminator, patch_size=8, real_label_lower=0.8, real_label_upper=1.2, name="pix2pix", **kwargs):
+        super(Pix2Pix, self).__init__(name=name, **kwargs)
         self.generator = generator
         self.discriminator = discriminator
         self.patch_size = patch_size
@@ -73,6 +73,10 @@ class Pix2Pix(tf.keras.Model):
             gen_total_loss, gen_gan_loss, gen_l1_loss = self.g_loss_fn(
                 y_pred=disc_fake_pred, y_target=labels_real,
                 out_img=gen_output,  target_img=target_batch)
+            
+            # gen_total_loss, gen_gan_loss, gen_l1_loss = self.g_loss_fn(
+            #     y_true=[labels_real, target_batch],
+            #     y_pred=[disc_fake_pred, gen_output])
             
             # calculate the discriminator loss, combining reals and fakes
             # with one-sided label smoothing on the reals.

@@ -75,7 +75,37 @@ def show_batch(dataset, size=3, max_examples=8):
     plt.show()
     plt.close()
     
-def save_sample(dataset, save_dir, batch_size=16, use_wandb=False):
+def save_sample(dataset, show=True, save_dir=False):
+
+    # grab a sample image and mask from the training set for visualisation during training
+    for sample_sketch, sample_image in dataset.take(1):
+        sample_sketch, sample_image = sample_sketch[0], sample_image[0]
+       
+    if save_dir: 
+        # save in case we resume training
+        np.save(save_dir/'sample_sketch', sample_sketch)
+        np.save(save_dir/'sample_image', sample_image)
+
+    if show:
+        fig, axs = plt.subplots(1,2) 
+        axs[0].imshow(sample_sketch, cmap='gray')
+        axs[1].imshow((sample_image+1)/2)
+
+        # set titles remove axis ticks
+        axs[0].set_title('Sketch')
+        axs[1].set_title('Source Image')
+        axs[0].set(xticks=[], yticks=[])
+        axs[1].set(xticks=[], yticks=[])
+        
+        # adjust styling and show
+        fig.patch.set_facecolor('white')
+        plt.subplots_adjust(wspace=0.05, hspace=0.05)
+        plt.show()
+        plt.close()
+        
+    return sample_sketch, sample_image
+    
+def save_sample_batch(dataset, save_dir, batch_size=16, use_wandb=False):
     """Prepares 16 images from the validation set to use for visualation
     during training. Saves in a temporary folder if needed to continuing learning.
     Optionally saves image of sketches and targets to wandb."""
@@ -163,6 +193,7 @@ def show_single_prediction(
     """
     # model expects [batch size, height, width, channels]
     input_img = input_img[newaxis, ...]
+    target_img = target_img[newaxis, ...]
     dis_out, gen_out = model.call(input_img)
     
     if isinstance(target_img, Tensor):
@@ -355,13 +386,16 @@ def plot_patches(model, sketch, image, patch_cmap='viridis', patch_vmin=-0.5, pa
 
     plt.show()
     plt.close()
+
     
 def save_bulk_examples(model, train_ds, valid_ds, viz_path, n_train=10, n_valid=10, **kwargs):
     """Save many examples from train and valid sets to a folder - viz_patch"""
     
+    print('Training')
     for i in range(n_train):
         plot_pred_batch(model, train_ds, save=viz_path/'train'/f'{i}.png', **kwargs)
         
+    print('Validation')
     for i in range(n_valid):
         plot_pred_batch(model, valid_ds, save=viz_path/'valid'/f'{i}.png', **kwargs)
         
@@ -369,7 +403,7 @@ def create_training_gif(image_path, save_dir):
     """Get the files from a wandb directory and create a gif"""
     
     # get list of file paths
-    file_names = list(glob.glob(image_path))
+    file_names = list(glob(image_path))
     file_names = pd.DataFrame(file_names, columns=['filepaths'])
     # get column of ids
     file_names['number'] = file_names.filepaths.str.extract('Sample Batch\_(\d+)')

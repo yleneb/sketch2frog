@@ -74,8 +74,14 @@ class GeneratorLoss(tf.keras.losses.Loss):
         super(GeneratorLoss, self).__init__()
         self.loss_object = loss_object
         self.LAMBDA = LAMBDA
+                   
+    def __call__(self, y_pred, y_target, out_img, target_img):
+        # y_pred=disc_fake_pred, y_target=labels_real,
+        # out_img=gen_output,  target_img=target_batch
+        # y_target, target_img = y_true
+        # y_pred, out_img = y_pred
         
-    def call(self, y_pred, y_target, out_img, target_img):
+        
         # binary cross entropy - patches
         gan_loss = self.loss_object(y_target, y_pred)
 
@@ -87,14 +93,13 @@ class GeneratorLoss(tf.keras.losses.Loss):
 
         return total_gen_loss, gan_loss, l1_loss
     
-
 class DiscriminatorLoss(tf.keras.losses.Loss):
     """Combine the discriminator losses from both the real and fake images"""
     def __init__(self, loss_object):
         super(DiscriminatorLoss, self).__init__()
         self.loss_object = loss_object
     
-    def call(self, d_real_pred, d_real_target, d_fake_pred, d_fake_target):
+    def __call__(self, d_real_pred, d_real_target, d_fake_pred, d_fake_target):
         real_loss = self.loss_object(d_real_target, d_real_pred)
         fake_loss = self.loss_object(d_fake_target, d_fake_pred)
         
@@ -104,7 +109,7 @@ class DiscriminatorLoss(tf.keras.losses.Loss):
 # Encoder and Decoders
 ######################################################
 
-def define_generator(sketch_shape=(256,256,1), dropout_pct=0.5):
+def define_generator(sketch_shape=(256,256,1), dropout_pct=0.5, out_ch=3):
     """U-NET Generator for 256x256 input"""
     # weight initialization
     init = tf.initializers.RandomNormal(stddev=0.02)
@@ -135,13 +140,13 @@ def define_generator(sketch_shape=(256,256,1), dropout_pct=0.5):
     d6 = decoder_block(d5, e2, 128, dropout=False)  # (batch_size,  64,  64,  256)
     d7 = decoder_block(d6, e1,  64, dropout=False)  # (batch_size, 128, 128,  128)
 
-    # output (batch_size, 256, 256, 3)
-    g = layers.Conv2DTranspose(3, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
+    # output (batch_size, 256, 256, out_ch)
+    g = layers.Conv2DTranspose(out_ch, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
     out_image = layers.Activation('tanh')(g)
 
     return tf.keras.Model(in_image, out_image)
 
-def define_small_generator(sketch_shape=(128,128,1), dropout_pct=0.5):
+def define_small_generator(sketch_shape=(128,128,1), dropout_pct=0.5, out_ch=3):
     """Modified structure for 128x128 input, simply removed one layer from each side"""
     # weight initialization
     init = tf.initializers.RandomNormal(stddev=0.02)
@@ -170,8 +175,8 @@ def define_small_generator(sketch_shape=(128,128,1), dropout_pct=0.5):
     d5 = decoder_block(d4, e2, 128, dropout=False)  # (batch_size,  32,  32,  256)
     d6 = decoder_block(d5, e1,  64, dropout=False)  # (batch_size,  64,  64,  128)
 
-    # output (batch_size, 128, 128, 3)
-    g = layers.Conv2DTranspose(3, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d6)
+    # output (batch_size, 128, 128, out_ch)
+    g = layers.Conv2DTranspose(out_ch, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d6)
     out_image = layers.Activation('tanh')(g)
 
     return tf.keras.Model(in_image, out_image)

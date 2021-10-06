@@ -12,19 +12,14 @@ def create_model(
     model_size="small"):
     
     assert model_size in ["small", "large"]
-    
-    generator = define_generator(
-        sketch_shape=(*image_size,1))
 
     if model_size=="small":
-        discriminator = define_small_generator(
-            sketch_shape=(*image_size,1),
-            image_shape=(*image_size,3))
+        generator = define_small_generator(
+        sketch_shape=(*image_size,1))
         
     elif model_size=="large":
-        discriminator = define_generator(
-            sketch_shape=(*image_size,1),
-            image_shape=(*image_size,3))
+        generator = define_generator(
+        sketch_shape=(*image_size,1))
     
     discriminator = define_discriminator(
         sketch_shape=(*image_size,1),
@@ -64,4 +59,10 @@ def compile_model(
         Adam(lr=d_learning_rate, beta_1=d_beta_1), # d_optimizer
         generator_loss, discriminator_loss, run_eagerly=run_eagerly)
 
+    return model
+
+def build_model(model, dataset):
+    # build the model with correct input shape by calling on a tensor.
+    for sketch_batch, image_batch in dataset.take(1):
+        model.predict(sketch_batch)
     return model

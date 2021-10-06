@@ -27,7 +27,7 @@ def _process_path(fname, image_shape, sketch_dir, images_dir):
     image = decode_image(image_path, image_shape)
     return sketch, image
 
-def aug_fn(sketch, image, transforms):
+def _aug_fn(sketch, image, transforms):
     # both images should be transformed the same
     data = {"image":sketch, 'image1':image}
     aug_data = transforms(**data)
@@ -35,16 +35,21 @@ def aug_fn(sketch, image, transforms):
     aug_image = aug_data["image1"]
     return aug_sketch, aug_image
 
-def data_augmentation(sketch, image, transforms):
-    # wrapper around augmentation function for tensorflow compatibility
-    aug_sketch, aug_image = tf.numpy_function(func=aug_fn, inp=[sketch, image, transforms], Tout=[tf.float32, tf.float32])
-    return aug_sketch, aug_image
+def data_augmentation_wrapper(transforms):
+    # returns the data_augmentation function for our given transforms
+    aug_fn = functools.partial(_aug_fn, transforms=transforms)
+    def data_augmentation(sketch, image):
+        # wrapper around augmentation function for tensorflow compatibility
+        aug_sketch, aug_image = tf.numpy_function(
+            func=aug_fn, inp=[sketch, image], Tout=[tf.float32, tf.float32])
+        return aug_sketch, aug_image
+    return data_augmentation
 
 # restore dataset shapes
 def set_shapes(sketch, image, image_shape=[128,128]):
     """The datasets loses its shape after applying a tf.numpy_function"""
-    sketch.set_shape([image_shape[0], image_shape[1], 1])
-    image.set_shape([image_shape[0], image_shape[1], 3])
+    sketch.set_shape([*image_shape, 1])
+    image.set_shape([*image_shape, 3])
     return sketch, image
 
 def get_datasets(image_size, sketch_dir, images_dir, train_length, valid_length,
@@ -55,7 +60,7 @@ def get_datasets(image_size, sketch_dir, images_dir, train_length, valid_length,
     transforms = A.Compose([
         A.PadIfNeeded(min_height=image_size[0]+20, min_width=image_size[1]+20, border_mode=BORDER_CONSTANT, value=[1,1,1]),
         A.Rotate(limit=40, border_mode=BORDER_CONSTANT, value=[1,1,1]),
-        A.RandomCrop(*image_size[0]),
+        A.RandomCrop(*image_size),
         A.HorizontalFlip(),
         #A.Affine(shear=[-45,45], mode=cv2.BORDER_CONSTANT, cval=[1,1,1])
         ], additional_targets={'image1':'image'})
@@ -85,14 +90,14 @@ def get_datasets(image_size, sketch_dir, images_dir, train_length, valid_length,
                 .cache()      
                 .shuffle(shuffle_buffer_size)
                 .repeat()
-                .map(functools.partial(data_augmentation, transforms=transforms), num_parallel_calls=num_parallel_calls)
+                .map(data_augmentation_wrapper(transforms), num_parallel_calls=num_parallel_calls)
                 .map(functools.partial(set_shapes, image_shape=image_size), num_parallel_calls=num_parallel_calls)
                 .batch(batch_size)
                 .prefetch(buffer_size=prefetch_buffer_size))
 
     valid_ds = (valid_ds
+                .cache()
                 .repeat()
-                .batch(batch_size)
-                .cache())
+                .batch(batch_size))
     
     return train_ds, valid_ds
