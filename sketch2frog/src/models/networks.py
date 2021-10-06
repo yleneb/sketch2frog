@@ -104,7 +104,44 @@ class DiscriminatorLoss(tf.keras.losses.Loss):
 # Encoder and Decoders
 ######################################################
 
-def define_generator(sketch_shape=(128,128,1), dropout_pct=0.5):
+def define_generator(sketch_shape=(256,256,1), dropout_pct=0.5):
+    """U-NET Generator for 256x256 input"""
+    # weight initialization
+    init = tf.initializers.RandomNormal(stddev=0.02)
+    # image input
+    in_image = layers.Input(shape=sketch_shape) # (batch_size, 256, 256, 1)
+
+    # encoder model: C64-C128-C256-C512-C512-C512-C512-C512
+    # BatchNorm is not applied to the first C64 layer in the encoder
+    e1 = encoder_block(in_image, 64, batchnorm=False) # (batch_size, 128, 128, 64)
+    e2 = encoder_block(e1, 128)  # (batch_size, 64, 64, 128)
+    e3 = encoder_block(e2, 256)  # (batch_size, 32, 32, 256)
+    e4 = encoder_block(e3, 512)  # (batch_size, 16, 16, 512)
+    e5 = encoder_block(e4, 512)  # (batch_size,  8,  8, 512)
+    e6 = encoder_block(e5, 512)  # (batch_size,  4,  4, 512)
+    e7 = encoder_block(e6, 512)  # (batch_size,  2,  2, 512)
+
+    # bottleneck, no batch norm, relu not leaky
+    b = layers.Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(e7)
+    b = layers.ReLU()(b) # (batch_size, 1, 1, 512)
+
+    # decoder model: CD512-CD1024-CD1024-C1024-C1024-C512-C256-C128
+    # N.B. only first 3 use dropout
+    d1 = decoder_block(b,  e7, 512, dropout_pct)    # (batch_size,   2,   2, 1024) # doubles filters due to concat
+    d2 = decoder_block(d1, e6, 512, dropout_pct)    # (batch_size,   4,   4, 1024)
+    d3 = decoder_block(d2, e5, 512, dropout_pct)    # (batch_size,   8,   8, 1024)
+    d4 = decoder_block(d3, e4, 512, dropout=False)  # (batch_size,  16,  16, 1024)
+    d5 = decoder_block(d4, e3, 256, dropout=False)  # (batch_size,  32,  32,  512)
+    d6 = decoder_block(d5, e2, 128, dropout=False)  # (batch_size,  64,  64,  256)
+    d7 = decoder_block(d6, e1,  64, dropout=False)  # (batch_size, 128, 128,  128)
+
+    # output (batch_size, 256, 256, 3)
+    g = layers.Conv2DTranspose(3, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
+    out_image = layers.Activation('tanh')(g)
+
+    return tf.keras.Model(in_image, out_image)
+
+def define_small_generator(sketch_shape=(128,128,1), dropout_pct=0.5):
     """Modified structure for 128x128 input, simply removed one layer from each side"""
     # weight initialization
     init = tf.initializers.RandomNormal(stddev=0.02)
