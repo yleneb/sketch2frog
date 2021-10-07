@@ -254,62 +254,6 @@ def show_batch_prediction(model, sketches, wandb_title=False, size=5):
     if wandb_title:
         wandb.log({wandb_title: plt})
     plt.close()
-    
-def plot_pred_batch(model, dataset, save=False, to_plot=8, size=2, show=True):
-    """
-    Take to_plot images from dataset.
-    Print the input image, the target image and predicted image from model generator.
-    Save the image to "save" if desired, and print if show=True.
-    size scales the figure
-    """
-
-    # make a directory to save the results if necessary
-    if save and not os.path.exists(save.parent):
-        os.makedirs(save.parent)
-        
-    # no ticks
-    subplot_options = dict(xticks=[], yticks=[])
-        
-    # take a batch and make predictions
-    for x_batch, y_batch in dataset.take(1):
-        
-        # if one batch has fewer than to_plot then do 1 whole batch
-        to_plot = min(to_plot, x_batch.shape[0])
-        
-        # get predictions and rescale to [0,1]
-        preds = (model.generator(x_batch).numpy()+1)/2
-        
-        x_batch = x_batch.numpy()
-        y_batch = (y_batch.numpy()+1)/2
-        
-        # prepare figure
-        fig = plt.Figure(figsize=[size*to_plot, size*3], constrained_layout=True)
-        gs = fig.add_gridspec(3,to_plot)
-        
-        # columns
-        for i, imgs in enumerate(zip(x_batch, y_batch, preds)):
-            # rows
-            for j, img in enumerate(imgs):
-                ax = fig.add_subplot(gs[j,i], **subplot_options)
-                
-                # generator input has 1 channel - b&w sketch
-                ax.imshow(img, cmap='gray' if j==0 else 'viridis')
-                
-                # add titles to left side
-                if i==0:
-                    ax.set_ylabel(['sketch','target','prediction'][j])
-                    
-            # stop once plotted enough
-            if i == to_plot-1:
-                break
-        
-        # colour between plots
-        fig.set_facecolor('white')
-        
-        if save:
-            fig.savefig(str(save))
-        if show:
-            display(fig)
             
 def plot_patches(model, sketch, image, patch_cmap='viridis', patch_vmin=-0.5, patch_vmax=1.5):
     """Plot a figure showing PatchGAN output for a set of generators."""
@@ -387,17 +331,69 @@ def plot_patches(model, sketch, image, patch_cmap='viridis', patch_vmin=-0.5, pa
     plt.show()
     plt.close()
 
+def plot_pred_batch(model, x_batch, y_batch, save=False, to_plot=8, size=2, show=True):
+    """
+    Take to_plot images from dataset.
+    Print the input image, the target image and predicted image from model generator.
+    Save the image to "save" if desired, and print if show=True.
+    size scales the figure
+    """
+
+    # make a directory to save the results if necessary
+    if save and not os.path.exists(save.parent):
+        os.makedirs(save.parent)
+        
+    # no ticks
+    subplot_options = dict(xticks=[], yticks=[])
+                
+    # if one batch has fewer than to_plot then do 1 whole batch
+    to_plot = min(to_plot, x_batch.shape[0])
+    
+    # get predictions and rescale to [0,1]
+    preds = (model.generator(x_batch).numpy()+1)/2
+    
+    x_batch = x_batch.numpy()
+    y_batch = (y_batch.numpy()+1)/2
+    
+    # prepare figure
+    fig = plt.Figure(figsize=[size*to_plot, size*3], constrained_layout=True)
+    gs = fig.add_gridspec(3,to_plot)
+    
+    # columns
+    for i, imgs in enumerate(zip(x_batch, y_batch, preds)):
+        # rows
+        for j, img in enumerate(imgs):
+            ax = fig.add_subplot(gs[j,i], **subplot_options)
+            
+            # generator input has 1 channel - b&w sketch
+            ax.imshow(img, cmap='gray' if j==0 else 'viridis')
+            
+            # add titles to left side
+            if i==0:
+                ax.set_ylabel(['sketch','target','prediction'][j])
+                
+        # stop once plotted enough
+        if i == to_plot-1:
+            break
+    
+    # colour between plots
+    fig.set_facecolor('white')
+    
+    if save:
+        fig.savefig(str(save))
+    if show:
+        display(fig)
     
 def save_bulk_examples(model, train_ds, valid_ds, viz_path, n_train=10, n_valid=10, **kwargs):
     """Save many examples from train and valid sets to a folder - viz_patch"""
     
     print('Training')
-    for i in range(n_train):
-        plot_pred_batch(model, train_ds, save=viz_path/'train'/f'{i}.png', **kwargs)
+    for i, (x_batch, y_batch) in enumerate(train_ds.take(n_train)):
+        plot_pred_batch(model, x_batch, y_batch, save=viz_path/'train'/f'{i}.png', **kwargs)
         
     print('Validation')
-    for i in range(n_valid):
-        plot_pred_batch(model, valid_ds, save=viz_path/'valid'/f'{i}.png', **kwargs)
+    for i, (x_batch, y_batch) in enumerate(valid_ds.take(n_valid)):
+        plot_pred_batch(model, x_batch, y_batch, save=viz_path/'valid'/f'{i}.png', **kwargs)
         
 def create_training_gif(image_path, save_dir):
     """Get the files from a wandb directory and create a gif"""
