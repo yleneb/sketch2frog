@@ -47,8 +47,6 @@ def decoder_block(layer_in, skip_in, n_filters, dropout=False):
     g = layers.ReLU()(g)
     return g
 
-# define_G from name (128 vs 256)
-
 ######################################################
 # Classes
 ######################################################
@@ -76,12 +74,8 @@ class GeneratorLoss(tf.keras.losses.Loss):
         self.LAMBDA = LAMBDA
                    
     def __call__(self, y_pred, y_target, out_img, target_img):
-        # y_pred=disc_fake_pred, y_target=labels_real,
-        # out_img=gen_output,  target_img=target_batch
-        # y_target, target_img = y_true
-        # y_pred, out_img = y_pred
-        
-        
+        """Overwrite __call__() instead of call() as loss functions
+        can only accept __call__(self, y_true, y_pred, sample_weights)"""
         # binary cross entropy - patches
         gan_loss = self.loss_object(y_target, y_pred)
 

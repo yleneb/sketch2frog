@@ -62,7 +62,6 @@ def get_datasets(image_size, sketch_dir, images_dir, train_length, valid_length,
         A.Rotate(limit=40, border_mode=BORDER_CONSTANT, value=[1,1,1]),
         A.RandomCrop(*image_size),
         A.HorizontalFlip(),
-        #A.Affine(shear=[-45,45], mode=cv2.BORDER_CONSTANT, cval=[1,1,1])
         ], additional_targets={'image1':'image'})
     
     # get a list of all the sketch paths

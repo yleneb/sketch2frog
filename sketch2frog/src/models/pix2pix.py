@@ -19,10 +19,10 @@ class Pix2Pix(tf.keras.Model):
         
     def compile(self, g_optimizer, d_optimizer, g_loss_fn, d_loss_fn, run_eagerly=None):
         super(Pix2Pix, self).compile()
-        self.g_optimizer = g_optimizer # Adam(lr=0.0002, beta_1=0.5)
-        self.d_optimizer = d_optimizer # Adam(lr=0.0002, beta_1=0.5)
-        self.g_loss_fn = g_loss_fn # loss=['binary_crossentropy', 'mae'], loss_weights=[1, 100]
-        self.d_loss_fn = d_loss_fn # bce, loss_weights=[0.5]
+        self.g_optimizer = g_optimizer
+        self.d_optimizer = d_optimizer
+        self.g_loss_fn = g_loss_fn
+        self.d_loss_fn = d_loss_fn
         self._run_eagerly = run_eagerly
 
     def call(self, data, training=False):
@@ -73,10 +73,6 @@ class Pix2Pix(tf.keras.Model):
             gen_total_loss, gen_gan_loss, gen_l1_loss = self.g_loss_fn(
                 y_pred=disc_fake_pred, y_target=labels_real,
                 out_img=gen_output,  target_img=target_batch)
-            
-            # gen_total_loss, gen_gan_loss, gen_l1_loss = self.g_loss_fn(
-            #     y_true=[labels_real, target_batch],
-            #     y_pred=[disc_fake_pred, gen_output])
             
             # calculate the discriminator loss, combining reals and fakes
             # with one-sided label smoothing on the reals.
