@@ -1,0 +1,66 @@
+## The Dataset
+
+3 different approaches to creating sketches
+
+DexiNed, U2Net
+
+I found a [dataset of over 7000 frogs on a white background](https://github.com/jonshamir/frog-dataset) which would be my targets from which I generated black and white sketches.
+
+<img src="figures/raw-frogs.png" width="700"/>
+
+To create sketches from these images I used a pretrained edge detection model, [DexiNed (Dense Extreme Inception Network)](https://github.com/xavysp/DexiNed/tree/master/DexiNed-TF2).
+
+
+<figure>
+    <img src='figures/frog-8/raw.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>Raw image</figcaption>
+</figure>
+<figure>
+    <img src='figures/frog-8/dexined.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>DexiNed Output</figcaption>
+</figure>
+
+While most frogs sit on a white background, many do not or have a large shadow. You can see in the DexiNed output above the outline of the non-white background. Training on this dataset led to **issues such as**
+<figure>
+    <img src='first model output' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption></figcaption>
+</figure>
+
+Furthermore, the dexined outputs were often far more detailed than you'd expect from a hand drawn sketch.
+
+<figure>
+    <img src='figures/frog-439/dexined.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>DexiNed output with too much detail</figcaption>
+</figure>
+
+To remove these backgrounds ands simplify the sketches I used a pretrained U2Net  fro background removal [in this colab](https://colab.research.google.com/github/shreyas-bk/U-2-Net-Demo/blob/master/DEMOS/U_2_Netp_Demonstration_Colab.ipynb#scrollTo=eWxv7eDJiq5b) from [shreyas-bk](https://github.com/shreyas-bk/U-2-Net). In particular this model is U2Netp, a smaller model with 4.7Mb weights, as opposed to the full U2Net with 176.3Mb weights.
+
+U2Net outputs a mask which I applied to the raw image to remove background. I then applied DexiNed to the U2Net masks to get sketches with no internal detail.
+
+<figure>
+    <img src='figures/frog-8/unet.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>U2Net Mask</figcaption>
+</figure>
+<figure>
+    <img src='figures/frog-8/unet masked.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>Background removed with U2Net</figcaption>
+</figure>
+<figure>
+    <img src='figures/frog-8/outline-sketch.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>Sketch from U2Net mask</figcaption>
+</figure>
+
+These new sketches were far more similar to a hand drawn sketch and while they did occasionally amputate frog limbs, generated frogs no longer had background problems.
+
+<figure>
+    <img src='figures/lost legs.png' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>U2Net sometimes removes limbs</figcaption>
+</figure>
+<figure>
+    <img src='' alt='missing' width="45%" style="border-style:solid; border-width:1px"/>
+    <figcaption>Prediction on outline sketches</figcaption>
+</figure>
+
+However, with no internal detail to learn from models trained with this dataset struggled placing eyes and mouths, omitting them entirely or sometimes placing too many.
+
+remember thresholds
