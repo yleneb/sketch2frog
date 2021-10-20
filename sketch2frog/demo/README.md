@@ -1,1 +1,0 @@
-Demo reuses code from https://github.com/zaidalyafeai/zaidalyafeai.github.io/tree/master/pix2pix
