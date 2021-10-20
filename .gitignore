@@ -136,7 +136,7 @@ dmypy.json
 .gitignore
 */data/
 */visualisations
-*/models/*
+*/models/2021*
 sketch2frog/notebooks/tmp/
 */*/wandb
 *dask-worker-space
