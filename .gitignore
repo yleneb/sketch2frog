@@ -134,7 +134,7 @@ dmypy.json
 
 # 
 .gitignore
-*/visualisations
+*/visualisations/*
 */models/2021*
 sketch2frog/notebooks/tmp/
 */*/wandb
