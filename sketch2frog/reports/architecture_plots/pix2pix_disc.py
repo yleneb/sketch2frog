@@ -80,19 +80,19 @@ arch = [
    
     # conv1
     to_Conv(name="c1", s_filer=" ", n_filer=64, offset="(3,0,0)", to="(cat_input-east)", width=2, height=49, depth=49, caption=" " ),
-    to_LeakyRelu(name="lr1", s_filer="256x256", offset="(0,0,0)", to="(c1-east)", width=1, height=49, depth=49, opacity=0.6, caption=" "),
+    to_LeakyRelu(name="lr1", s_filer="128x128", offset="(0,0,0)", to="(c1-east)", width=1, height=49, depth=49, opacity=0.6, caption=" "),
     # conv2
     to_Conv(name="c2", s_filer=" ", n_filer=128, offset="(4,0,0)", to="(lr1-east)", width=4, height=36, depth=36, caption=" " ),
     to_BN(name="bn2", offset="(0,0,0)", to="(c2-east)", width=1, height=36, depth=36, opacity=0.6, caption=" "),
-    to_LeakyRelu(name="lr2", s_filer="128x128", offset="(0,0,0)", to="(bn2-east)", width=1, height=36, depth=36, opacity=0.6, caption=" "),
+    to_LeakyRelu(name="lr2", s_filer="64x64", offset="(0,0,0)", to="(bn2-east)", width=1, height=36, depth=36, opacity=0.6, caption=" "),
     # conv3
     to_Conv(name="c3", s_filer=" ", n_filer=256, offset="(3,0,0)", to="(lr2-east)", width=8, height=25, depth=25, caption=" " ),
     to_BN(name="bn3", offset="(0,0,0)", to="(c3-east)", width=1, height=25, depth=25, opacity=0.6, caption=" "),
-    to_LeakyRelu(name="lr3", s_filer="64x64", offset="(0,0,0)", to="(bn3-east)", width=1, height=25, depth=25, opacity=0.6, caption=" "),
+    to_LeakyRelu(name="lr3", s_filer="32x32", offset="(0,0,0)", to="(bn3-east)", width=1, height=25, depth=25, opacity=0.6, caption=" "),
     # conv4
     to_Conv(name="c4", s_filer=" ", n_filer=512, offset="(2,0,0)", to="(lr3-east)", width=16, height=16, depth=16, caption=" " ),
     to_BN(name="bn4", offset="(0,0,0)", to="(c4-east)", width=1, height=16, depth=16, opacity=0.6, caption=" "),
-    to_LeakyRelu(name="lr4", s_filer="32x32", offset="(0,0,0)", to="(bn4-east)", width=1, height=16, depth=16, opacity=0.6, caption=" "),
+    to_LeakyRelu(name="lr4", s_filer="16x16", offset="(0,0,0)", to="(bn4-east)", width=1, height=16, depth=16, opacity=0.6, caption=" "),
     # conv5 no strides
     to_Conv(name="c5", s_filer=" ", n_filer=512, offset="(2,0,0)", to="(lr4-east)", width=16, height=16, depth=16, caption="No strides" ),
     to_BN(name="bn5", offset="(0,0,0)", to="(c5-east)", width=1, height=16, depth=16, opacity=0.6, caption=" "),

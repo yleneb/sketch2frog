@@ -1,4 +1,0 @@
-- colab to try out the model
-- write readme
-- final checks
-- publish
