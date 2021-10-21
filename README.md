@@ -1,18 +1,13 @@
 # sketch2frog - Generating Frogs from Simple Sketches
 
-<table align="center" width=100%>
-    <tr>
-    <td align="right"  width=45%>
-        <span style="font-size:24px">
-            <a href='https://github.com/yleneb/sketch2frog/blob/master/sketch2frog/reports/Report.ipynb'>[Learn more]</a>
-        </span>
-    </td>
-    <td align="left"  width=45%>
-        <span style="font-size:24px">
-            <a href='https://colab.research.google.com/drive/1pl4wXsYgd79jVScqP5TdrBXsh7Me66ZE?usp=sharing'>[Try it out]</a>
-        </span>
-    </td>
-</table>
+<div align="center" width=100%>
+    <span align="right" width=50% style="font-size:24px">
+        <a href='https://github.com/yleneb/sketch2frog/blob/master/sketch2frog/reports/Report.ipynb'>[Learn more]</a>
+    </span>
+    <span align="left" width=50% style="font-size:24px">
+        <a href='https://colab.research.google.com/drive/1pl4wXsYgd79jVScqP5TdrBXsh7Me66ZE?usp=sharing'>[Try it out]</a>
+    </span>
+</div>
 
 <table align="center" width=100%>
     <tr>
