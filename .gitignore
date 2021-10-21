@@ -134,7 +134,6 @@ dmypy.json
 
 # 
 .gitignore
-*/data/
 */visualisations
 */models/2021*
 sketch2frog/notebooks/tmp/
@@ -150,3 +149,8 @@ tensorboard
 PlotNeuralNet
 model.zip
 */demo
+*/data/external/*
+*/data/interim/*
+*/data/processed/*
+*/data/raw/*
+*/data/examples/*
