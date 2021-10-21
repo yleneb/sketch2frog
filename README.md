@@ -29,7 +29,9 @@ sketch2frog transforms hand drawn sketches to colour images of frogs, imspired b
 
 pix2pix is a Conditional GAN for image-to-image translation with paired datasets. This project contains a build pix2pix in TensorFlow 2 and combines ideas from several implementations, listed in the resources below.
 
-<img src="https://github.com/yleneb/sketch2frog/blob/master/sketch2frog/reports/results/2021-10-13%201327/training.gif" width="100" height="100" />
+<div align="center">
+<img src="https://github.com/yleneb/sketch2frog/blob/master/sketch2frog/reports/results/2021-10-13%201327/training.gif" width="400px" height="400px"/>
+</div>
 
 ## [Dataset](https://github.com/jonshamir/frog-dataset)
 
