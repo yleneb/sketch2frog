@@ -25,7 +25,7 @@
 
 ------------
 
-sketch2frog transforms hand drawn sketches to colour images of frogs, imspired by [edges2cats](https://affinelayer.com/pixsrv/) and other [applications](https://phillipi.github.io/pix2pix/#:~:text=#pix2pix). A dataset of sketch-like images is generated using [U2Net](https://github.com/shreyas-bk/U-2-Net) and [DexiNed](https://github.com/xavysp/DexiNed/tree/master/DexiNed-TF2), these frog image-sketch pairs are used to train a pix2pix model.
+sketch2frog transforms hand drawn sketches to colour images of frogs, inspired by [edges2cats](https://affinelayer.com/pixsrv/) and other [applications](https://phillipi.github.io/pix2pix/#:~:text=#pix2pix). A dataset of sketch-like images is generated using [U2Net](https://github.com/shreyas-bk/U-2-Net) and [DexiNed](https://github.com/xavysp/DexiNed/tree/master/DexiNed-TF2), these frog image-sketch pairs are used to train a pix2pix model.
 
 pix2pix is a Conditional GAN for image-to-image translation with paired datasets. This project contains a build of pix2pix in TensorFlow 2 and combines ideas from several implementations, listed in the resources below.
 
